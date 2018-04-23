@@ -1,4 +1,0 @@
-set -x
-
-docker run --rm -v $(pwd):/here --user $(id -u):$(id -g) --workdir /here ethereum/solc:stable -o /here/output --overwrite --abi --bin --optimize  $@
-
