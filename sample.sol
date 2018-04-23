@@ -1,6 +1,6 @@
 pragma solidity ^0.4.21;
 
-import "browser/bluzelle.sol";
+import "https://github.com/bluzelle/eth-oracle/bluzelle.sol";
 
 /* This is a minimal sample client that watches the value of a single key in
  * Bluzelle */
