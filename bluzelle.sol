@@ -2,11 +2,12 @@ pragma solidity ^0.4.21;
 import "github.com/oraclize/ethereum-api/oraclizeAPI.sol";
 import "github.com/Arachnid/solidity-stringutils/src/strings.sol";
 
-
 contract BluzelleClient is usingOraclize {
     using strings for *;
-    string constant api_read = "https://pastebin.com/raw/";
     mapping(bytes32 => string) outstandingReads;
+
+    // Temporary until the proxy server exists
+    string constant api_read = "https://pastebin.com/raw/";
     
     function read(string key) internal {
         bytes32 id = oraclize_query("URL", api_read.toSlice().concat(key.toSlice()));
