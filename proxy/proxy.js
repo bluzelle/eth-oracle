@@ -3,10 +3,10 @@ const blz = require('bluzelle');
 const http = require('http');
 const port = 8080;
 
-//const daemonAddress = "13.78.131.94";
-//const daemonPort = 51010;
-const daemonAddress = "localhost";
-const daemonPort = 8100;
+const daemonAddress = "13.78.131.94";
+const daemonPort = 51010;
+//const daemonAddress = "localhost";
+//const daemonPort = 8100;
 
 const requestHandler = (request, response) => {
   console.log(request.method, request.url);
@@ -50,7 +50,7 @@ const requestHandler = (request, response) => {
         // We return a constant prefix so that the smart contract can
         // distinguish an error from a string representing an error that's
         // actually stored in the db
-        value => response.end("ack" + JSON.stringify(value)),
+        value => response.end("ack" + value.toString()),
         error => {
           console.log(error);
           response.end("err");
