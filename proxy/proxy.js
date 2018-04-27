@@ -7,25 +7,63 @@ const requestHandler = (request, response) => {
   console.log(request.method, request.url);
   console.log(request.headers);
 
-  path = request.url.split('/');
+  var path = request.url.split('/');
 
-  if(path.length == 4  && path[1] === 'read'){
-
-    blz.connect('ws://127.0.0.1:8100', path[2])
-
-    blz.read(path[3]).then(
-      value => {
-        response.end(JSON.stringify(value));
-      },
-      error => {
-        response.writeHead(404);
-        response.end("no such key");
-      }
-    );
-
-  }else{
+  if(path.length != 4){
     response.writeHead(400);
     response.end("bad request");
+  }
+
+  // The only information oraclize will give us back is the response body as a
+  // string; so there's no use trying to return any other information (like a
+  // meaningful http status code)
+  var forwardResult = (promise, request) => {
+    promise.then(
+      value => response.end("ack"),
+      error => response.end("err")
+    );
+  };
+
+  // Accumulate the data from a http post and do something with it
+  var withData = (request, callback) => {
+    content = "";
+    request.on('data', data => content += data);
+    request.on('end', () => {
+      console.log("post data recieved:", content);
+      callback(content);
+    });
+  };
+
+  blz.connect('ws://127.0.0.1:8100', path[2])
+  var key = path[3];
+  switch(request.method.toString() + path[1].toString()){
+    case "GETread":
+      blz.read(key).then(
+        // We return a constant prefix so that the smart contract can
+        // distinguish an error from a string representing an error that's
+        // actually stored in the db
+        value => response.end("ack" + JSON.stringify(value)),
+        error => response.end("err")
+      );
+      break;
+
+    case "POSTdelete":
+      forwardResult(blz.remove(path[3]), request);
+      break;
+
+    case "POSTcreate":
+      withData(request, data => 
+        forwardResult(blz.create(key, data), request));
+      break;
+
+    case "POSTupdate":
+      withData(request, data =>
+        forwardResult(blz.update(key, data), request));
+      break;
+
+    default:
+      response.writeHead(400);
+      response.end("bad request");
   }
 }
 
