@@ -4,14 +4,15 @@ const http = require('http');
 const port = 8080;
 
 const requestHandler = (request, response) => {
-  console.log(request.url);
+  console.log(request.method, request.url);
+  console.log(request.headers);
+
   path = request.url.split('/');
 
-  if(path.length == 4  && path[1] === 'get'){
+  if(path.length == 4  && path[1] === 'read'){
 
     blz.connect('ws://127.0.0.1:8100', path[2])
 
-    console.log('reading');
     blz.read(path[3]).then(
       value => {
         response.end(JSON.stringify(value));
@@ -21,7 +22,6 @@ const requestHandler = (request, response) => {
         response.end("no such key");
       }
     );
-    console.log('read returned');
 
   }else{
     response.writeHead(400);

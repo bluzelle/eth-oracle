@@ -11,9 +11,10 @@ contract SampleClient is BluzelleClient {
     
     address private owner = msg.sender;
     
-    constructor(string _key) public {
+    constructor(string _key, string _uuid) public {
         key = _key;
         owner = msg.sender;
+        setUUID(_uuid);
     }
     
     /* Read the value from Bluzelle (this requires a small fee to pay Oraclize) */
