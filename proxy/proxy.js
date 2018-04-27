@@ -3,6 +3,11 @@ const blz = require('bluzelle');
 const http = require('http');
 const port = 8080;
 
+//const daemonAddress = "13.78.131.94";
+//const daemonPort = 51010;
+const daemonAddress = "localhost";
+const daemonPort = 8100;
+
 const requestHandler = (request, response) => {
   console.log(request.method, request.url);
   console.log(request.headers);
@@ -20,7 +25,10 @@ const requestHandler = (request, response) => {
   var forwardResult = (promise, request) => {
     promise.then(
       value => response.end("ack"),
-      error => response.end("err")
+      error => {
+        console.log(error);
+        response.end("err");
+      }
     );
   };
 
@@ -34,7 +42,7 @@ const requestHandler = (request, response) => {
     });
   };
 
-  blz.connect('ws://127.0.0.1:8100', path[2])
+  blz.connect('ws://' + daemonAddress + ':' + daemonPort, path[2]);
   var key = path[3];
   switch(request.method.toString() + path[1].toString()){
     case "GETread":
@@ -43,7 +51,10 @@ const requestHandler = (request, response) => {
         // distinguish an error from a string representing an error that's
         // actually stored in the db
         value => response.end("ack" + JSON.stringify(value)),
-        error => response.end("err")
+        error => {
+          console.log(error);
+          response.end("err");
+        }
       );
       break;
 
