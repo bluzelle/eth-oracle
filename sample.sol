@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.20;
 
 import "https://github.com/bluzelle/eth-oracle/bluzelle.sol";
 
@@ -13,7 +13,7 @@ contract SampleClient is BluzelleClient {
 
     address private owner = msg.sender;
 
-    constructor(string _key, string _uuid) public {
+    function SampleClient(string _key, string _uuid) public {
         require(bytes(_key).length > 0);
         require(bytes(_uuid).length > 0);
         key = _key;
